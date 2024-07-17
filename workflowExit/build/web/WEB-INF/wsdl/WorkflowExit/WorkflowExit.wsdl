@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ExternalLogicExecuter" targetNamespace="http://www.infor.com/ion/workflowengine/externallogic" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.infor.com/ion/workflowengine/externallogic" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.infor.com/ion/workflowengine/externallogic" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://www.infor.com/ion/workflowengine/externallogic">
+  <xs:element name="booleanValue" type="tns:booleanValue"/>
+  <xs:element name="dateTimeValue" type="tns:dateTimeValue"/>
+  <xs:element name="dateValue" type="tns:dateValue"/>
+  <xs:element name="decimalValue" type="tns:decimalValue"/>
+  <xs:element name="execute" type="tns:execute"/>
+  <xs:element name="executeResponse" type="tns:executeResponse"/>
+  <xs:element name="integerValue" type="tns:integerValue"/>
+  <xs:element name="stringValue" type="tns:stringValue"/>
+  <xs:element name="structureBooleanField" type="tns:structureBooleanField"/>
+  <xs:element name="structureDateField" type="tns:structureDateField"/>
+  <xs:element name="structureDateTimeField" type="tns:structureDateTimeField"/>
+  <xs:element name="structureDecimalField" type="tns:structureDecimalField"/>
+  <xs:element name="structureElement" type="tns:structureElement"/>
+  <xs:element name="structureIntegerField" type="tns:structureIntegerField"/>
+  <xs:element name="structureLevel" type="tns:structureLevel"/>
+  <xs:element name="structureStringField" type="tns:structureStringField"/>
+  <xs:element name="structureValue" type="tns:structureValue"/>
+  <xs:element name="variable" type="tns:variable"/>
+  <xs:element name="workflowInfo" type="tns:workflowInfo"/>
+  <xs:complexType name="execute">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="WorkflowInfo" type="tns:workflowInfo"/>
+      <xs:element minOccurs="0" name="Command" type="xs:string"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="InputVariables" type="tns:variable"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="workflowInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="workflowName" type="xs:string"/>
+      <xs:element minOccurs="0" name="workflowStepName" type="xs:string"/>
+      <xs:element name="workflowId" type="xs:long"/>
+      <xs:element name="stepId" type="xs:long"/>
+      <xs:element name="workflowMajorVersion" type="xs:long"/>
+      <xs:element name="workflowMinorVersion" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType abstract="true" name="variable">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="booleanValue">
+    <xs:complexContent>
+      <xs:extension base="tns:variable">
+        <xs:sequence>
+          <xs:element name="value" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="dateValue">
+    <xs:complexContent>
+      <xs:extension base="tns:variable">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="value" type="xs:date"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="dateTimeValue">
+    <xs:complexContent>
+      <xs:extension base="tns:variable">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="value" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="decimalValue">
+    <xs:complexContent>
+      <xs:extension base="tns:variable">
+        <xs:sequence>
+          <xs:element name="value" type="xs:double"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="integerValue">
+    <xs:complexContent>
+      <xs:extension base="tns:variable">
+        <xs:sequence>
+          <xs:element name="value" type="xs:long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="stringValue">
+    <xs:complexContent>
+      <xs:extension base="tns:variable">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="value" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="structureValue">
+    <xs:complexContent>
+      <xs:extension base="tns:variable">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="content" nillable="true" type="tns:structureElement"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="structureElement">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="structureLevel">
+    <xs:complexContent>
+      <xs:extension base="tns:structureElement">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="content" nillable="true" type="tns:structureElement"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="structureBooleanField">
+    <xs:complexContent>
+      <xs:extension base="tns:structureElement">
+        <xs:sequence>
+          <xs:element name="value" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="structureDateField">
+    <xs:complexContent>
+      <xs:extension base="tns:structureElement">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="value" type="xs:date"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="structureDateTimeField">
+    <xs:complexContent>
+      <xs:extension base="tns:structureElement">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="value" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="structureDecimalField">
+    <xs:complexContent>
+      <xs:extension base="tns:structureElement">
+        <xs:sequence>
+          <xs:element name="value" type="xs:double"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="structureIntegerField">
+    <xs:complexContent>
+      <xs:extension base="tns:structureElement">
+        <xs:sequence>
+          <xs:element name="value" type="xs:long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="structureStringField">
+    <xs:complexContent>
+      <xs:extension base="tns:structureElement">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="value" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="executeResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="OutputVariables" type="tns:variable"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ExternalLogicFault" type="tns:ExternalLogicFault"/>
+  <xs:complexType name="ExternalLogicFault">
+    <xs:sequence/>
+  </xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="ExternalLogicException">
+    <wsdl:part name="ExternalLogicException" element="tns:ExternalLogicFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="execute">
+    <wsdl:part name="parameters" element="tns:execute">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="executeResponse">
+    <wsdl:part name="parameters" element="tns:executeResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="IExternalLogicService">
+    <wsdl:operation name="execute">
+      <wsdl:input name="execute" message="tns:execute">
+    </wsdl:input>
+      <wsdl:output name="executeResponse" message="tns:executeResponse">
+    </wsdl:output>
+      <wsdl:fault name="ExternalLogicException" message="tns:ExternalLogicException">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ExternalLogicExecuterSoapBinding" type="tns:IExternalLogicService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="execute">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="execute">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="executeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ExternalLogicException">
+        <soap:fault name="ExternalLogicException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ExternalLogicExecuter">
+    <wsdl:port name="ExternalLogicExecuterSoapBinding" binding="tns:ExternalLogicExecuterSoapBinding">
+      <soap:address location="http://localhost:9090/ExternalLogicExecuterSoapBinding"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

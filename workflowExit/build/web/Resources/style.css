@@ -1,0 +1,24 @@
+/* 
+    Document   : style
+    Created on : Nov 6, 2012, 7:28:15 AM
+    Author     : Infor
+    Description: Stylesheet for startup page.
+*/
+
+root { 
+    display: block;
+}
+
+body{
+    color: #999999;
+
+}
+
+h2{
+    color:#008aff;
+}
+
+table{
+    margin-top: 30px;
+    border-color: #ffffff;
+}

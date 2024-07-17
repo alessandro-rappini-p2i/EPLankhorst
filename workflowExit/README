@@ -1,0 +1,21 @@
+To see this WorkflowExit example work, create:
+1. A Workflow in IONDesk that contains
+   a. input parameters "String1" type string and "String2" type string
+   b. output parameter "ConcatenatedString" type string.
+   c. an Activity:Exit Point with 
+       - URL= "http://<yourwebserver>:<yourport>/WorkflowExit/ExternalLogicExecuter"
+       - Command="Concatenate"
+   d. an Activity:Notification that displays the output parameter ConcatenatedString
+   e. activate the workflow
+2. Start this workflow e.g. manually using ActivityDeck (don't forget to give this workflow a Workflow Role first!)
+
+3. A Workflow in IONDesk that contains
+   a. output parameter "ListOfNotes" type string
+   b. an Activity:Task
+   c. an Activity:Exit Point with 
+       - URL= "http://<yourwebserver>:<yourport>/WorkflowExit/ExternalLogicExecuter"
+       - Command="ShowNotes"
+       - check the box "include notes from previous steps"
+   d. an Activity:Notification that displays the output parameter "ListOfNotes" 
+   e. activate the workflow
+4. Start this workflow e.g. manually using ActivityDeck (don't forget to give this workflow a Workflow Role first!)
