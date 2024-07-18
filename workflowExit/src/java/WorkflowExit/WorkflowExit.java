@@ -90,13 +90,99 @@ public class WorkflowExit {
      * name “ConcatenatedString”
      */
     private List<Variable> ConcatenateStrings(List<Variable> inputVariables) {
-        String string1 = VariableHelper.getStringValue("String1", inputVariables);
-        String string2 = VariableHelper.getStringValue("String2", inputVariables);
         java.util.List<com.infor.ion.workflowengine.externallogic.Variable> outputVariables = new ArrayList<com.infor.ion.workflowengine.externallogic.Variable>();
-        VariableHelper.setStringValue("ConcatenatedString", string1 + string2, outputVariables);
+        try
+        {
+            String string1 = VariableHelper.getStringValue("String1", inputVariables);
+            String string2 = VariableHelper.getStringValue("String2", inputVariables);  
+            VariableHelper.setStringValue("ConcatenatedString", string1 + string2, outputVariables);
+            VariableHelper.setStringValue("Error", "", outputVariables);
+        }catch(Exception e){
+            VariableHelper.setStringValue("ConcatenatedString", "", outputVariables);
+            VariableHelper.setStringValue("Error", e.toString(), outputVariables);
+        }
+        
         return outputVariables;
     }
     
+    
+       private List<Variable> InvokePurchaseWorkflowApproverWS(List<Variable> inputVariables) {
+        java.util.List<com.infor.ion.workflowengine.externallogic.Variable> outputVariables = new ArrayList<com.infor.ion.workflowengine.externallogic.Variable>();
+        String approver = "";
+        String order = ""; 
+        String sequence = "";     
+        try
+        {
+            approver = VariableHelper.getStringValue("Approver", inputVariables);
+            order = VariableHelper.getStringValue("Order", inputVariables);
+            sequence = VariableHelper.getStringValue("Sequence", inputVariables);
+        }catch (Exception e)
+        {
+            VariableHelper.setStringValue("Response", "", outputVariables);
+            VariableHelper.setStringValue("ResponseCode", "", outputVariables);
+            VariableHelper.setStringValue("Error", e.toString(), outputVariables);
+            return outputVariables;
+        }
+        
+        String url = "http://ptmauidev:8312/c4ws/services/PurchaseWorkflowApprover/PTMALNDEV?wsdl";
+        String domainToRemove = "@grupoeuronete.pt";
+        approver = approver.replace(domainToRemove, "");
+        String company = "200";
+        String processingScope = "request";
+        String orderStatus = "approved";
+        String responseString = "";
+        
+
+        String Request = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:pur=\"http://www.infor.com/businessinterface/PurchaseWorkflowApprover\">\n" +
+                     "   <soapenv:Header>\n" +
+                     "      <pur:Activation>\n" +
+                     "         <company>" + company + "</company>\n" +
+                     "      </pur:Activation>\n" +
+                     "   </soapenv:Header>\n" +
+                     "   <soapenv:Body>\n" +
+                     "      <pur:InserFromEP>\n" +
+                     "         <InserFromEPRequest>\n" +
+                     "            <ControlArea>\n" +
+                     "               <processingScope>" + processingScope + "</processingScope>\n" +
+                     "            </ControlArea>\n" +
+                     "            <DataArea>\n" +
+                     "               <PurchaseWorkflowApprover>\n" +
+                     "                  <approver>" + approver + "</approver>\n" +
+                     "                  <order>" + order + "</order>\n" +
+                     "                  <orderStatus>" + orderStatus + "</orderStatus>\n" +
+                     "                  <sequence>" + sequence + "</sequence>\n" +
+                     "               </PurchaseWorkflowApprover>\n" +
+                     "            </DataArea>\n" +
+                     "         </InserFromEPRequest>\n" +
+                     "      </pur:InserFromEP>\n" +
+                     "   </soapenv:Body>\n" +
+                     "</soapenv:Envelope>";
+        String Response = "";
+        String ResponseCode = "";
+        
+        
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "text/xml;charset=utf-8")
+                .POST(BodyPublishers.ofString(Request))
+                .build();
+        try {
+            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+            ResponseCode =  response.statusCode()+"";
+            ResponseCode = response.body();
+        } catch (Exception e) {
+            //e.printStackTrace();
+            VariableHelper.setStringValue("Response", "", outputVariables);
+            VariableHelper.setStringValue("ResponseCode", "", outputVariables);
+            VariableHelper.setStringValue("Error", e.toString(), outputVariables);
+        }
+        
+        VariableHelper.setStringValue("Response", responseString, outputVariables);
+        VariableHelper.setStringValue("ResponseCode", ResponseCode, outputVariables);
+        VariableHelper.setStringValue("Error", "", outputVariables);
+        return outputVariables;
+    }
     
 
     /**
@@ -171,66 +257,7 @@ public class WorkflowExit {
 
 
         
-    private List<Variable> InvokePurchaseWorkflowApproverWS(List<Variable> inputVariables) {
-        String approver = VariableHelper.getStringValue("Approver", inputVariables);
-        String order = VariableHelper.getStringValue("Order", inputVariables);
-        String sequence = VariableHelper.getStringValue("Sequence", inputVariables);
-        
-        String url = "http://ptmauidev:8312/c4ws/services/PurchaseWorkflowApprover/PTMALNDEV?wsdl";
-        String domainToRemove = "@grupoeuronete.pt";
-        approver = approver.replace(domainToRemove, "");
-        String company = "200";
-        String processingScope = "request";
-        String orderStatus = "approved";
-        String responseString = "";
-        
-
-        String Request = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:pur=\"http://www.infor.com/businessinterface/PurchaseWorkflowApprover\">\n" +
-                     "   <soapenv:Header>\n" +
-                     "      <pur:Activation>\n" +
-                     "         <company>" + company + "</company>\n" +
-                     "      </pur:Activation>\n" +
-                     "   </soapenv:Header>\n" +
-                     "   <soapenv:Body>\n" +
-                     "      <pur:InserFromEP>\n" +
-                     "         <InserFromEPRequest>\n" +
-                     "            <ControlArea>\n" +
-                     "               <processingScope>" + processingScope + "</processingScope>\n" +
-                     "            </ControlArea>\n" +
-                     "            <DataArea>\n" +
-                     "               <PurchaseWorkflowApprover>\n" +
-                     "                  <approver>" + approver + "</approver>\n" +
-                     "                  <order>" + order + "</order>\n" +
-                     "                  <orderStatus>" + orderStatus + "</orderStatus>\n" +
-                     "                  <sequence>" + sequence + "</sequence>\n" +
-                     "               </PurchaseWorkflowApprover>\n" +
-                     "            </DataArea>\n" +
-                     "         </InserFromEPRequest>\n" +
-                     "      </pur:InserFromEP>\n" +
-                     "   </soapenv:Body>\n" +
-                     "</soapenv:Envelope>";
-        String Response = "";
-        String ResponseCode = "";
-        
-        
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Content-Type", "text/xml;charset=utf-8")
-                .POST(BodyPublishers.ofString(Request))
-                .build();
-        try {
-            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-            ResponseCode =  response.statusCode()+"";
-            ResponseCode = response.body();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        java.util.List<com.infor.ion.workflowengine.externallogic.Variable> outputVariables = new ArrayList<com.infor.ion.workflowengine.externallogic.Variable>();
-        VariableHelper.setStringValue("Response", responseString, outputVariables);
-        VariableHelper.setStringValue("ResponseCode", ResponseCode, outputVariables);
-        return outputVariables;
-    }
+ 
 
     /**
      * Helper methods to get and set variable values.
